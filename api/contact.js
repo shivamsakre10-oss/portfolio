@@ -1,0 +1,18 @@
+import { sendContactEmail } from "../server/emailService.js";
+
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ success: false, error: "METHOD_NOT_ALLOWED", message: "Only POST allowed." });
+  }
+
+  const forwarded = req.headers["x-forwarded-for"];
+  const ip = forwarded ? forwarded.split(",")[0].trim() : req.socket?.remoteAddress || "127.0.0.1";
+
+  try {
+    const result = await sendContactEmail({ ...req.body, ip });
+    return res.status(result.status || (result.success ? 200 : 400)).json(result);
+  } catch (err) {
+    console.error("Vercel contact handler error:", err);
+    return res.status(500).json({ success: false, error: "SERVER_ERROR", message: err.message });
+  }
+}
