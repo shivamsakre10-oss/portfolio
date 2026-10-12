@@ -1,143 +1,392 @@
 <div align="center">
-  <br />
-    <a href="https://www.youtube.com/watch?v=E-fdPfRxkzQ" target="_blank">
-      <img src="public/images/readme.png" alt="Project Banner">
-    </a>
-  <br />
 
-  <div>
-    <img src="https://img.shields.io/badge/-Three.js-black?style=for-the-badge&logo=three.js&logoColor=white" />
-    <img src="https://img.shields.io/badge/-GSAP-88CE02?style=for-the-badge&logo=greensock&logoColor=white" />
-    <img src="https://img.shields.io/badge/-Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" />
-  </div>
+# 🌐 Shivam Sakre // 3D Interactive Portfolio & Systems Architecture
 
-  <h3 align="center">Interactive 3D Portfolio Website</h3>
+<p align="center">
+  <b>Elite Full-Stack Developer • Technical Architect • Interactive 3D Web & Systems Engineer</b>
+</p>
 
-   <div align="center">
-     Build this project step by step with our detailed tutorial on <a href="https://www.youtube.com/@javascriptmastery/videos" target="_blank"><b>JavaScript Mastery</b></a> YouTube. Join the JSM family!
-    </div>
+<p align="center">
+  <a href="https://shivamsakre.in" target="_blank">
+    <img src="https://img.shields.io/badge/Live_Portfolio-shivamsakre.in-00f0ff?style=for-the-badge&logo=googlechrome&logoColor=black" alt="Live Website" />
+  </a>
+  <a href="https://github.com/shivamsakre10-oss/portfolio" target="_blank">
+    <img src="https://img.shields.io/badge/GitHub-shivamsakre10--oss-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
+  </a>
+  <a href="https://linkedin.com/in/shivam-sakre" target="_blank">
+    <img src="https://img.shields.io/badge/LinkedIn-Shivam_Sakre-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
+  </a>
+  <a href="mailto:shivamsakre10@gmail.com">
+    <img src="https://img.shields.io/badge/Email-shivamsakre10@gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" />
+  </a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/React_19-20232A?style=flat-square&logo=react&logoColor=61DAFB" />
+  <img src="https://img.shields.io/badge/Three.js-000000?style=flat-square&logo=three.js&logoColor=white" />
+  <img src="https://img.shields.io/badge/React_Three_Fiber-black?style=flat-square&logo=react&logoColor=00f0ff" />
+  <img src="https://img.shields.io/badge/GSAP-88CE02?style=flat-square&logo=greensock&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS_v4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white" />
+  <img src="https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/Express_5-000000?style=flat-square&logo=express&logoColor=white" />
+  <img src="https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white" />
+  <img src="https://img.shields.io/badge/Google_Gemini_AI-4285F4?style=flat-square&logo=googlegemini&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vite_6-646CFF?style=flat-square&logo=vite&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white" />
+</p>
+
+<br />
+
+<a href="https://shivamsakre.in" target="_blank">
+  <img src="public/images/readme.png" alt="Shivam Sakre Portfolio Banner" width="100%" style="border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 240, 255, 0.2);" />
+</a>
+
 </div>
 
-## 📋 <a name="table">Table of Contents</a>
+---
 
-1. 🤖 [Introduction](#introduction)
-2. ⚙️ [Tech Stack](#tech-stack)
-3. 🔋 [Features](#features)
-4. 🤸 [Quick Start](#quick-start)
-5. 🔗 [Assets & Snippets](#links)
-6. 🚀 [More](#more)
+## 📑 Table of Contents
 
-## ⚠️ Tutorial
+- [Overview](#-overview)
+- [Key Features & Innovations](#-key-features--innovations)
+- [Featured Projects](#-featured-projects)
+- [Technical Architecture](#-technical-architecture)
+- [Tech Stack](#-tech-stack)
+- [Repository Structure](#-repository-structure)
+- [Getting Started](#-getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Environment Setup](#environment-setup)
+  - [Running the Project](#running-the-project)
+- [API Endpoints](#-api-endpoints)
+- [Deployment](#-deployment)
+- [Author & Contact](#-author--contact)
+- [License](#-license)
 
-This repository contains the code corresponding to an in-depth tutorial available on our YouTube channel, <a href="https://www.youtube.com/@javascriptmastery/videos" target="_blank"><b>JavaScript Mastery</b></a>.
+---
 
-If you prefer visual learning, this is the perfect resource for you. Follow our tutorial to learn how to build projects like these step-by-step in a beginner-friendly manner!
+## ⚡ Overview
 
-<a href="https://www.youtube.com/watch?v=E-fdPfRxkzQ" target="_blank"><img src="https://github.com/sujatagunale/EasyRead/assets/151519281/1736fca5-a031-4854-8c09-bc110e3bc16d" /></a>
+Welcome to the official repository for **Shivam Sakre's Portfolio** — an ultra-modern, cyberpunk-inspired 3D web experience engineered with **React 19**, **Three.js / React Three Fiber**, **Tailwind CSS v4**, **Node.js / Express**, and **Google Gemini AI**.
 
-## <a name="introduction">🤖 Introduction</a>
+Designed from the ground up for speed, visual immersion, and real-world engineering depth, this platform serves as both a high-fidelity creative showcase and a production-grade full-stack application featuring:
+- **Interactive 3D WebGL Scenes** with responsive orbiting and physics-based lighting.
+- **Embedded AI Portfolio Copilot** backed by Google's Gemini LLM with voice dictation (STT) and synthesized speech (TTS).
+- **Interactive Cyber Terminal** simulating a real-time developer CLI with hardware telemetry and interactive commands.
+- **Interactive Project Scope & Cost Estimator** for calculating engineering sprint schedules and architecture requirements.
+- **Robust Email Transmission System** with dual-mode Nodemailer SMTP, Vercel serverless integration, and automatic client receipt confirmations.
 
-The 3D Portfolio project is a highly engaging personal website that features animated 3D scenes, smooth camera transitions, interactive model showcases, and responsive design. It’s ideal for developers, designers, or freelancers looking to stand out in the digital crowd.
+---
 
-If you're getting started and need assistance or face any bugs, join our active Discord community with over **50k+** members. It's a place where people help each other out.
+## 🚀 Key Features & Innovations
 
-<a href="https://discord.com/invite/n6EdbFJ" target="_blank"><img src="https://github.com/sujatagunale/EasyRead/assets/151519281/618f4872-1e10-42da-8213-1d69e486d02e" /></a>
+### 1. 🌌 3D Holographic WebGL Experience
+- Built with **Three.js**, **@react-three/fiber**, and **@react-three/drei**.
+- Dynamic GLTF models, bloom postprocessing, responsive canvas camera choreographies, and particle mesh backdrops.
+- Optimized for smooth 60fps rendering across desktop and mobile devices.
 
-## <a name="tech-stack">⚙️ Tech Stack</a>
+### 2. 🤖 Gemini-Powered AI Portfolio Copilot
+- Intelligent assistant integrated via `/api/copilot` leveraging Google Gemini.
+- Grounded with real knowledge about Shivam's career history, work at **Veracity Supply Chain Limited** and **Ypsilon IT Solutions**, core competencies, and project deliverables.
+- Interactive action buttons: one-click resume download, WhatsApp chat launcher, and deep-link section navigation.
+- Native speech recognition (`webkitSpeechRecognition`) for voice input and Web Speech API synthesis for spoken audio output.
 
-- Three.js
-- React Three Fiber
-- Drei
-- GSAP
-- Tailwind CSS
-- Vite
-- React 19
+### 3. 💻 Interactive Cyber Terminal (`Terminal.jsx`)
+- Full UNIX-inspired developer shell embedded inside the webpage.
+- Supported CLI commands: `help`, `skills`, `projects`, `exp`, `contact`, `whoami`, `clear`, `top` (live CPU/RAM/traffic telemetry simulation), and theme controls.
+- Fast-action pill buttons for quick queries without manual typing.
 
-## <a name="features">🔋 Features</a>
+### 4. 📊 Project Scope & Sprint Estimator (`ScopeEstimator.jsx`)
+- Dynamic architectural calculator for prospective clients and engineering managers.
+- Select project archetypes (*3D Web Experience*, *Full-Stack SaaS*, *Fintech API*, *AI Workflows*, *Full MVP*).
+- Toggle feature add-ons (custom shaders, RBAC auth, payment gateways, automated CI/CD) to compute estimated delivery days, complexity tiers, and recommended architectures.
 
-### Features of the 3D Portfolio Project
+### 5. 🎵 Synthesized Web Audio Soundscapes (`CareerTrajectory.jsx`)
+- Interactive career milestones with pitch-mapped harmonic tones synthesized entirely client-side using the **Web Audio API**.
+- Frequency mapping: Domain (587.33 Hz), Backend (659.25 Hz), Lifecycle (783.99 Hz), and Database (554.37 Hz).
 
-👉 Animated 3D models and reveal animations
+### 6. 📬 Secure Contact Transmission Protocol (`Contact.jsx`)
+- Dual-channel message processing (local Node.js Express server + Vercel serverless functions in `/api/contact`).
+- Automated, beautifully styled HTML receipt confirmations dispatched directly to clients upon submission (`/api/send-receipt`).
+- Rate limiting, IP tracking, honeypot spam protection, and real-time validation.
 
-👉 Realistic lighting and shadows
+---
 
-👉 GSAP-powered scroll interactions
+## 🏆 Featured Projects
 
-👉 Responsive design with Tailwind CSS and Flexbox/Grid
+<div align="center">
 
-👉 Micro Interactions
+### 1. [RicRoot — Workforce Management Platform](https://ricroot.in)
+*Connecting employers with verified blue & grey-collar workforce talent at scale.*
 
-👉 Multi-section layout (About, Projects, Contact)
+<a href="https://ricroot.in" target="_blank">
+  <img src="public/images/ricroot-showcase.png" alt="RicRoot Showcase" width="90%" style="border-radius: 8px; margin: 10px 0;" />
+</a>
 
-👉 Mobile optimized 3D experience
+</div>
 
-and many more, including code architecture and reusability.
+- **Role:** Full-Stack Development & Architecture
+- **Tech Stack:** React.js, Node.js, Express.js, MongoDB, RESTful APIs
+- **Key Highlights:**
+  - Role-based job search by location, shifts, and compensation packages.
+  - Automated AI candidate screening calling workflows to pre-qualify applicants.
+  - Candidate verification pipelines and verified digital profile systems.
+  - Integrated interview scheduler with automated calendar meeting links.
+  - Bulk hiring drives management for high-volume enterprise workforce intake.
+- **Live URL:** [ricroot.in](https://ricroot.in)
 
-## <a name="quick-start">🤸 Quick Start</a>
+---
 
-Follow these steps to set up the project locally on your machine.
+### 2. SB Work — Freelancer Marketplace
+*A unified platform connecting businesses with vetted independent talent.*
 
-**Prerequisites**
+- **Tech Stack:** React.js, Node.js, Express.js, MongoDB, JWT Authentication
+- **Key Highlights:**
+  - Dual-role authentication separating client postings from freelancer bids.
+  - Responsive dashboards for real-time project publishing, discovery, and proposal reviews.
+  - Role-based authorization (RBAC) secured via JWT tokens and encrypted password stores.
+  - Scalable MongoDB schema design for fast search indexing across listings and proposals.
 
-Make sure you have the following installed on your machine:
+---
 
+### 3. Online Quiz Web Application
+*Interactive web-based assessment engine designed for college and academic examinations.*
+
+- **Tech Stack:** React.js, Node.js, Express.js, MongoDB
+- **Key Highlights:**
+  - Subject-wise quiz generation with timers and automated score tabulation.
+  - Administrative back-office panel to manage question banks and evaluate student score histories.
+  - Secure role-guarded routes preventing tampering during live assessment sessions.
+
+---
+
+## 🛠️ Technical Architecture
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                          CLIENT (Vite + React 19)                      │
+│                                                                        │
+│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────────┐  │
+│  │ 3D Canvas / R3F  │  │ Cyber Terminal   │  │ Portfolio Copilot    │  │
+│  │ Three.js Models  │  │ Interactive CLI  │  │ Voice STT / TTS      │  │
+│  └─────────┬────────┘  └────────┬─────────┘  └──────────┬───────────┘  │
+│            │                    │                       │              │
+│  ┌─────────┴────────────────────┴───────────────────────┴───────────┐  │
+│  │          Responsive Cyber-Industrial UI (Tailwind CSS v4)        │  │
+│  └──────────────────────────────────┬───────────────────────────────┘  │
+└─────────────────────────────────────┼──────────────────────────────────┘
+                                      │ REST API Requests
+                                      ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                 BACKEND / TRANSMISSION LAYER (Node.js)                 │
+│                                                                        │
+│   Express Server (server.js)  OR  Vercel Serverless Functions (/api)  │
+│                                                                        │
+│      ├── /api/health          -> Server status & SMTP diagnostic       │
+│      ├── /api/copilot         -> Google Gemini 1.5/2.0 API gateway     │
+│      ├── /api/contact         -> Inbound client transmission & mailer  │
+│      └── /api/send-receipt    -> Outbound client acknowledgment receipt│
+└───────────────────────┬───────────────────────────────┬────────────────┘
+                        │                               │
+                        ▼                               ▼
+        ┌───────────────────────────────┐   ┌────────────────────────────┐
+        │       Google Gemini API       │   │    Nodemailer / SMTP       │
+        │  (Portfolio Copilot Engine)   │   │  (Gmail / Resend / Brevo)  │
+        └───────────────────────────────┘   └────────────────────────────┘
+```
+
+---
+
+## 💻 Tech Stack
+
+| Domain | Technologies |
+| :--- | :--- |
+| **Frontend Core** | React 19, JavaScript (ES6+), Vite 6, HTML5, CSS3 |
+| **3D & Animation** | Three.js, React Three Fiber (`@react-three/fiber`), Drei (`@react-three/drei`), GSAP (`@gsap/react`), Postprocessing |
+| **Styling & UI** | Tailwind CSS v4, Lucide React Icons, Google Fonts (Hanken Grotesk, JetBrains Mono, Space Grotesk) |
+| **Backend & Runtime** | Node.js (v20+), Express 5, CORS, Dotenv |
+| **AI Integration** | Google Gemini API (Portfolio Copilot intelligent knowledge engine) |
+| **Email Protocol** | Nodemailer (Gmail SMTP, Resend, Brevo, or transactional SMTP) |
+| **Database & ODM** | MongoDB, Mongoose |
+| **DevOps & Tooling** | Vercel (Serverless Functions), Git, ESLint, npm |
+
+---
+
+## 📁 Repository Structure
+
+```plaintext
+portfolio/
+├── api/                       # Vercel Serverless API functions
+│   ├── contact.js             # Serverless contact submission handler
+│   ├── copilot.js             # Serverless Gemini AI gateway
+│   ├── health.js              # Serverless health & diagnostic probe
+│   └── send-receipt.js        # Serverless auto-receipt dispatcher
+├── public/                    # Static public assets
+│   ├── images/                # Project mockups, logos, showcase cards
+│   ├── models/                # Optimized GLTF/GLB 3D binary models
+│   └── Shivam_Sakre_Resume.pdf# Downloadable PDF resume
+├── server/                    # Standalone Node.js Express backend
+│   ├── emailService.js        # Nodemailer SMTP transport & HTML templates
+│   ├── geminiService.js       # Gemini API client & contextual knowledge agent
+│   ├── server.js              # Express app entry point (port 5000)
+│   └── testEmail.js           # CLI diagnostic script for testing SMTP
+├── src/                       # Frontend React application
+│   ├── components/            # Reusable components (HologramScene, Copilot, NavBar, etc.)
+│   ├── constants/             # Profile constants, navigation links, abilities
+│   ├── context/               # Global state (ThemeContext, etc.)
+│   ├── sections/              # Page sections (Hero, Showcase, Terminal, Scope, Contact, etc.)
+│   ├── utils/                 # Audio synthesis, smooth scroll utilities
+│   ├── App.jsx                # Main application orchestrator
+│   ├── index.css              # Tailwind CSS v4 directives & typography tokens
+│   └── main.jsx               # React DOM entry point
+├── .env.example               # Environment variables template
+├── index.html                 # Single page application HTML shell
+├── package.json               # Project manifest, scripts, and dependencies
+└── vite.config.js             # Vite configuration with Tailwind CSS integration
+```
+
+---
+
+## 🚀 Getting Started
+
+Follow these steps to run the complete full-stack portfolio on your local machine.
+
+### Prerequisites
+
+Ensure you have the following installed:
+- [Node.js](https://nodejs.org/) (Version 18.x or higher)
 - [Git](https://git-scm.com/)
-- [Node.js](https://nodejs.org/en)
-- [npm](https://www.npmjs.com/) (Node Package Manager)
+- [npm](https://www.npmjs.com/) (bundled with Node.js)
 
-**Cloning the Repository**
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/shivamsakre10-oss/portfolio.git
+   cd portfolio
+   ```
+
+2. **Install project dependencies:**
+   ```bash
+   npm install
+   ```
+
+### Environment Setup
+
+Create a `.env` file in the root directory by copying the example file:
 
 ```bash
-git clone https://github.com/adrianhajdin/3d-portfolio.git
-cd 3d-portfolio
+cp .env.example .env
 ```
 
-**Installation**
-
-Install the project dependencies using npm:
-
-```bash
-npm install
-```
-
-**Set Up Environment Variables**
-
-Create a new file named `.env` in the root of your project and add the following content:
+Configure your credentials inside `.env`:
 
 ```env
-VITE_APP_EMAILJS_SERVICE_ID=
-VITE_APP_EMAILJS_TEMPLATE_ID=
-VITE_APP_EMAILJS_PUBLIC_KEY=
+# Server Port
+PORT=5000
+
+# Recipient for contact form transmissions
+CONTACT_DESTINATION_EMAIL=shivamsakre10@gmail.com
+
+# Google Gemini API Key (for Portfolio Copilot AI)
+# Get your free key at: https://aistudio.google.com/
+GEMINI_API_KEY=your_gemini_api_key_here
+
+# SMTP Configuration for Contact Form
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_16_character_app_password
+SMTP_FROM="Shivam Sakre Transmission" <your_email@gmail.com>
 ```
 
-Replace the placeholder values with your actual **[EmailJS](https://www.emailjs.com/)** credentials.
+> [!TIP]
+> **Gmail Setup:** Enable 2-Step Verification on your Google Account, generate an [App Password](https://myaccount.google.com/apppasswords), and paste the 16-character string into `SMTP_PASS`.
 
-**Running the Project**
+### Running the Project
 
+#### 1. Frontend Development Server (Vite)
+Runs the React client with Hot Module Replacement (HMR):
 ```bash
 npm run dev
 ```
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-Open [http://localhost:5173](http://localhost:5173/) in your browser to view the project.
+#### 2. Full-Stack Backend Server
+Runs the standalone Express backend handling `/api/contact`, `/api/copilot`, and `/api/health`:
+```bash
+npm run server
+```
+The server will start on [http://localhost:5000](http://localhost:5000).
 
+#### 3. Test Email Diagnostics
+Verify that your SMTP credentials work before sending real form submissions:
+```bash
+npm run test-email
+```
 
-## <a name="links">🔗 Assets and Snippets</a>
+#### 4. Build for Production
+Bundle the optimized client application:
+```bash
+npm run build
+```
 
-Assets and snippets used in the project can be found in the **[video kit](https://jsm.dev/pfolio25-kit)**.
+Preview the production build locally:
+```bash
+npm run preview
+```
 
-<a href="https://jsm.dev/pfolio25-kit" target="_blank">
-  <img src="public/images/readme-video-kit.png" alt="Video Kit Banner">
-</a>
+---
 
+## 📡 API Endpoints
 
-## <a name="more">🚀 More</a>
+The backend provides the following REST endpoints (supported both via Express and Vercel serverless routes):
 
-**Advance your skills with JSM Pro Courses**
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/health` | Health check & SMTP connection diagnostic status |
+| `POST` | `/api/contact` | Submits a new transmission and delivers an email notification |
+| `POST` | `/api/send-receipt` | Dispatches an automatic confirmation receipt to the visitor's email |
+| `POST` | `/api/copilot` | Queries the Google Gemini AI assistant for interactive answers |
 
-Enjoyed creating this project? Dive deeper into our PRO courses for a richer learning adventure. They're packed with
-detailed explanations, cool features, and exercises to boost your skills. Give it a go!
+---
 
-<a href="https://beta.jsmastery.pro/" target="_blank">
-  <img src="public/images/readme-bottom.png" alt="Project Banner">
-</a>
-# portfolio
+## 🌐 Deployment
+
+### Deploying to Vercel (Recommended)
+This repository is pre-configured for seamless Vercel deployment:
+1. Push your code to your GitHub repository.
+2. Import the project on [Vercel](https://vercel.com).
+3. Set your environment variables (`GEMINI_API_KEY`, `SMTP_USER`, `SMTP_PASS`, `CONTACT_DESTINATION_EMAIL`, etc.) in the Vercel project settings.
+4. Deploy! The frontend builds automatically, and files in `/api` are treated as serverless functions.
+
+### Deploying with Node / Docker / VPS
+If hosting on a VPS (Ubuntu/Debian) or PaaS (Render, Railway, Fly.io):
+1. Run `npm run build` to generate the production `dist/` directory.
+2. Start the Express server with `npm start` or `npm run server`.
+3. The server will automatically serve the static `dist/` build and handle all `/api` requests on the assigned port.
+
+---
+
+## 👨‍💻 Author & Contact
+
+**Shivam Sakre**  
+*Software Developer & Technical Architect*  
+*Veracity Supply Chain Limited • Ahmedabad, India*
+
+- 🌐 **Portfolio:** [https://shivamsakre.in](https://shivamsakre.in)
+- 💼 **LinkedIn:** [linkedin.com/in/shivam-sakre](https://linkedin.com/in/shivam-sakre)
+- 🐙 **GitHub:** [github.com/shivamsakre10-oss](https://github.com/shivamsakre10-oss)
+- ✉️ **Email:** [shivamsakre10@gmail.com](mailto:shivamsakre10@gmail.com)
+- 📱 **WhatsApp:** [+91 97703 75191](https://wa.me/919770375191)
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE). Feel free to use it as inspiration for your own portfolio builds.
+
+<div align="center">
+  <sub>Engineered with precision by Shivam Sakre • Built for the modern web</sub>
+</div>
