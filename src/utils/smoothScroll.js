@@ -1,7 +1,17 @@
-import { animateScroll as scroll, scroller } from "react-scroll";
+import { getLenis } from "./lenis";
+
+// Scroll with Lenis when active, otherwise fall back to native smooth scroll
+const scrollToY = (top) => {
+  const lenis = getLenis();
+  if (lenis) {
+    lenis.scrollTo(top, { duration: 1.2 });
+  } else {
+    window.scrollTo({ top, behavior: "smooth" });
+  }
+};
 
 /**
- * Universal smooth scrolling utility powered by react-scroll.
+ * Universal smooth scrolling utility powered by Lenis.
  * Seamlessly handles element IDs, hash strings (e.g., "#about"),
  * DOM elements, responsive navbar offsets, completion callbacks,
  * and prefers-reduced-motion accessibility compliance across the full website.
@@ -25,10 +35,7 @@ export const smoothScrollTo = (target, options = {}) => {
 
   // Handle scrolling to top/home
   if (targetId === "home" || targetId === "" || target === 0) {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    scrollToY(0);
 
     if (updateHash && window.history.pushState) {
       window.history.pushState(null, "", "#home");
@@ -64,10 +71,7 @@ export const smoothScrollTo = (target, options = {}) => {
     window.pageYOffset + targetElement.getBoundingClientRect().top - offset
   );
 
-  window.scrollTo({
-    top: targetY,
-    behavior: "smooth",
-  });
+  scrollToY(targetY);
 
   if (updateHash && window.history.pushState) {
     window.history.pushState(null, "", `#${targetId}`);

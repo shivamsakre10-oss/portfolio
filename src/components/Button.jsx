@@ -2,6 +2,7 @@
  * Ultra-premium animated CTA button with obsidian glassmorphic body,
  * glowing neon ambient halo, live pulsing beacon, and interactive arrow slide.
  */
+import { smoothScrollTo } from "../utils/smoothScroll";
 
 const Button = ({ text = "See My Work", className, id = "counter" }) => {
   const handleClick = (e) => {
@@ -13,11 +14,7 @@ const Button = ({ text = "See My Work", className, id = "counter" }) => {
       document.getElementById(id) ||
       document.getElementById("counter");
 
-    if (target) {
-      const offset = 80;
-      const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
-      window.scrollTo({ top, behavior: "smooth" });
-    }
+    if (target) smoothScrollTo(target.id);
   };
 
   return (
