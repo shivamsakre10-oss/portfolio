@@ -21,14 +21,9 @@ const HologramScene = () => {
     camera.position.set(0, 0, 9);
 
     // 3. Renderer
-    const isSmallScreen = window.innerWidth < 768;
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: !isSmallScreen,
-      powerPreference: "high-performance",
-    });
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isSmallScreen ? 1.25 : 1.5));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.domElement.style.width = "100%";
     renderer.domElement.style.height = "100%";
     renderer.domElement.style.pointerEvents = "none";

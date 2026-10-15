@@ -221,23 +221,6 @@ export default function CyberMiddleBody({ children }) {
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     window.addEventListener("mouseleave", handleMouseLeave);
 
-    // Pre-rendered radial glow sprites (one per ember colour). Replaces per-particle
-    // ctx.shadowBlur, the most expensive 2D canvas operation in this loop.
-    const GLOW_SIZE = 64;
-    const glowSprites = EMBER_COLORS.map((c) => {
-      const sprite = document.createElement("canvas");
-      sprite.width = sprite.height = GLOW_SIZE;
-      const g = sprite.getContext("2d");
-      const half = GLOW_SIZE / 2;
-      const grad = g.createRadialGradient(half, half, 0, half, half, half);
-      grad.addColorStop(0, `rgba(${c.r}, ${c.g}, ${c.b}, 1)`);
-      grad.addColorStop(0.25, `rgba(${c.r}, ${c.g}, ${c.b}, 0.45)`);
-      grad.addColorStop(1, `rgba(${c.r}, ${c.g}, ${c.b}, 0)`);
-      g.fillStyle = grad;
-      g.fillRect(0, 0, GLOW_SIZE, GLOW_SIZE);
-      return sprite;
-    });
-
     let tick = 0;
     function render() {
       if (!visibleRef.current || document.hidden) {
@@ -332,21 +315,19 @@ export default function CyberMiddleBody({ children }) {
           ctx.stroke();
         }
 
-        const r = p.radius * (isWarp ? 1.2 : 1);
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius * (isWarp ? 1.2 : 1), 0, Math.PI * 2);
 
         if (p.hasGlow && !isMotionReduced) {
-          const glowR = r + r * (isWarp ? 8 : 4 + Math.min(4, impulseEnergy * 1.2)) * 0.6 + 2;
-          ctx.globalAlpha = currentAlpha * 0.9;
-          ctx.drawImage(glowSprites[p.colorIndex], p.x - glowR, p.y - glowR, glowR * 2, glowR * 2);
+          ctx.shadowColor = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${currentAlpha * 0.9})`;
+          ctx.shadowBlur = p.radius * (isWarp ? 8 : 4 + Math.min(4, impulseEnergy * 1.2));
         }
 
-        ctx.globalAlpha = currentAlpha;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgb(${p.color.r}, ${p.color.g}, ${p.color.b})`;
+        ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${currentAlpha})`;
         ctx.fill();
+        ctx.restore();
       }
-      ctx.globalAlpha = 1;
 
       animationId = requestAnimationFrame(render);
     }
