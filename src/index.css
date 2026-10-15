@@ -1200,3 +1200,28 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .bp-fill, .bp-thumb { transition: none; }
 }
+
+/* ========================================================
+   PERFORMANCE: cheaper equivalents of the heaviest effects
+   ======================================================== */
+
+/* Large decorative glows: a real gaussian filter (130-150px radius on 600px+
+   layers, some of them animated) is re-rasterised on the GPU every frame.
+   A radial alpha falloff gives the same soft-glow look with a flat layer. */
+.blur-3xl,
+.blur-2xl,
+.blur-xl,
+[class*="blur-["]:not([class*="backdrop-blur"]) {
+  filter: none;
+  -webkit-mask-image: radial-gradient(closest-side, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 100%);
+}
+
+/* Cards that use xl+ backdrop blur sit on 85-98% opaque backgrounds, so the
+   blur is imperceptible but forces a backdrop re-sample on every scrolled frame. */
+.backdrop-blur-xl,
+.backdrop-blur-2xl,
+.backdrop-blur-3xl {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
