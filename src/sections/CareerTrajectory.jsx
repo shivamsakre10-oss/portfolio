@@ -61,6 +61,17 @@ export default function CareerTrajectory() {
   const [flowMode, setFlowMode] = useState("drift"); // 'drift' | 'warp'
   const [isTiltActive, setIsTiltActive] = useState(true);
 
+  // Sync flowMode if changed by controls in other sections
+  useEffect(() => {
+    const handleFlowChange = (e) => {
+      if (e.detail && (e.detail === "drift" || e.detail === "warp")) {
+        setFlowMode(e.detail);
+      }
+    };
+    window.addEventListener("flowModeChange", handleFlowChange);
+    return () => window.removeEventListener("flowModeChange", handleFlowChange);
+  }, []);
+
   const audioCtxRef = useRef(null);
   const cardsRef = useRef(new Map());
 
@@ -430,8 +441,11 @@ export default function CareerTrajectory() {
     const nextMode = flowMode === "drift" ? "warp" : "drift";
     setFlowMode(nextMode);
     playWarpSound(nextMode === "warp");
-    if (typeof window !== "undefined" && window.setEmberFlowMode) {
-      window.setEmberFlowMode(nextMode);
+    if (typeof window !== "undefined") {
+      if (window.setEmberFlowMode) {
+        window.setEmberFlowMode(nextMode);
+      }
+      window.dispatchEvent(new CustomEvent("flowModeChange", { detail: nextMode }));
     }
   };
 

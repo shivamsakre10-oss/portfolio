@@ -1,15 +1,5 @@
 import { getLenis } from "./lenis";
 
-// Scroll with Lenis when active, otherwise fall back to native smooth scroll
-const scrollToY = (top) => {
-  const lenis = getLenis();
-  if (lenis) {
-    lenis.scrollTo(top, { duration: 1.2 });
-  } else {
-    window.scrollTo({ top, behavior: "smooth" });
-  }
-};
-
 /**
  * Universal smooth scrolling utility powered by Lenis.
  * Seamlessly handles element IDs, hash strings (e.g., "#about"),
@@ -33,16 +23,30 @@ export const smoothScrollTo = (target, options = {}) => {
     targetId = target.id;
   }
 
+  const lenis = getLenis();
+  const prefersReducedMotion =
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches || false;
+
   // Handle scrolling to top/home
   if (targetId === "home" || targetId === "" || target === 0) {
-    scrollToY(0);
+    if (lenis) {
+      lenis.scrollTo(0, {
+        duration: prefersReducedMotion ? 0 : 1.15,
+        immediate: prefersReducedMotion,
+        onComplete: callback,
+      });
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+      });
+      if (callback) {
+        setTimeout(callback, 450);
+      }
+    }
 
     if (updateHash && window.history.pushState) {
       window.history.pushState(null, "", "#home");
-    }
-
-    if (callback) {
-      setTimeout(callback, 450);
     }
     return;
   }
@@ -66,18 +70,28 @@ export const smoothScrollTo = (target, options = {}) => {
   const targetElement = document.getElementById(resolvedId);
   if (!targetElement) return;
 
-  const targetY = Math.max(
-    0,
-    window.pageYOffset + targetElement.getBoundingClientRect().top - offset
-  );
-
-  scrollToY(targetY);
+  if (lenis) {
+    lenis.scrollTo(targetElement, {
+      offset: -offset,
+      duration: prefersReducedMotion ? 0 : 1.15,
+      immediate: prefersReducedMotion,
+      onComplete: callback,
+    });
+  } else {
+    const targetY = Math.max(
+      0,
+      window.pageYOffset + targetElement.getBoundingClientRect().top - offset
+    );
+    window.scrollTo({
+      top: targetY,
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+    });
+    if (callback) {
+      setTimeout(callback, 450);
+    }
+  }
 
   if (updateHash && window.history.pushState) {
     window.history.pushState(null, "", `#${targetId}`);
-  }
-
-  if (callback) {
-    setTimeout(callback, 450);
   }
 };

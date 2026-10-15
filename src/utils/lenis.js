@@ -19,6 +19,9 @@ export const initLenis = () => {
     return () => {};
   }
 
+  // Ensure html element has the lenis class so lenis.css and scroll-behavior: auto take effect
+  document.documentElement.classList.add("lenis");
+
   lenis = new Lenis({
     duration: 1.15,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -28,6 +31,10 @@ export const initLenis = () => {
     // Let inner scrollable panels (chat, terminal) scroll natively
     allowNestedScroll: true,
   });
+
+  if (typeof window !== "undefined") {
+    window.lenis = lenis;
+  }
 
   lenis.on("scroll", ScrollTrigger.update);
 
@@ -39,6 +46,10 @@ export const initLenis = () => {
     gsap.ticker.remove(tick);
     lenis?.destroy();
     lenis = null;
+    if (typeof window !== "undefined") {
+      delete window.lenis;
+    }
+    document.documentElement.classList.remove("lenis");
   };
 };
 

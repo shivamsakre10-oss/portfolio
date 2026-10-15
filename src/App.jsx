@@ -35,6 +35,49 @@ const App = () => {
     devops: false,
   });
 
+  // Cyberpunk ember flow mode: 'drift' | 'warp'
+  const [flowMode, setFlowMode] = useState("drift");
+
+  useEffect(() => {
+    const handleFlowChange = (e) => {
+      if (e.detail && (e.detail === "drift" || e.detail === "warp")) {
+        setFlowMode(e.detail);
+      }
+    };
+    window.addEventListener("flowModeChange", handleFlowChange);
+    return () => window.removeEventListener("flowModeChange", handleFlowChange);
+  }, []);
+
+  const handleToggleFlowMode = () => {
+    const nextMode = flowMode === "drift" ? "warp" : "drift";
+    setFlowMode(nextMode);
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) {
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = nextMode === "warp" ? "sawtooth" : "sine";
+        osc.frequency.setValueAtTime(nextMode === "warp" ? 180 : 380, now);
+        osc.frequency.exponentialRampToValueAtTime(nextMode === "warp" ? 720 : 180, now + 0.18);
+        gain.gain.setValueAtTime(0.04, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.19);
+      }
+    } catch (_) {}
+
+    if (typeof window !== "undefined") {
+      if (window.setEmberFlowMode) {
+        window.setEmberFlowMode(nextMode);
+      }
+      window.dispatchEvent(new CustomEvent("flowModeChange", { detail: nextMode }));
+    }
+  };
+
   const toggleDrawer = (drawerId) => {
     setOpenDrawers((prev) => ({ ...prev, [drawerId]: !prev[drawerId] }));
   };
@@ -272,7 +315,7 @@ const App = () => {
           <div className="relative z-10 w-full max-w-5xl mx-auto mt-10 sm:mt-14 pt-2 grid grid-cols-1 sm:grid-cols-3 gap-5 md:gap-6 reveal-item is-revealed stagger-3 text-left">
             <StatsCard
               title="Years Experience"
-              value="4+"
+              value="1+"
               icon={Users}
               gradient="bg-gradient-to-tr from-cyan-500 to-blue-600 shadow-[0_0_24px_rgba(6,182,212,0.35)]"
             />
@@ -299,18 +342,63 @@ const App = () => {
         <CyberMiddleBody>
           {/* WHO I AM (ABOUT STORY) */}
           <section className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="about">
-          {/* Eyebrow Telemetry Badge */}
-          <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-lg bg-[#0d121d]/80 border border-[#3b494b]/40 mb-4 backdrop-blur-sm reveal-item is-revealed">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00f2fe] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00f2fe]" />
-            </span>
-            <span className="font-code-sm text-xs text-[#00f0ff] uppercase tracking-widest">
-              [01 // IDENTITY]
-            </span>
-            <span className="text-[#849495] font-code-sm text-xs pl-2 border-l border-[#3b494b]/40">
-              STATUS: NOMINAL
-            </span>
+          {/* Eyebrow Telemetry Badge & Controls */}
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+            <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-lg bg-[#0d121d]/80 border border-[#3b494b]/40 backdrop-blur-sm reveal-item is-revealed">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00f2fe] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00f2fe]" />
+              </span>
+              <span className="font-code-sm text-xs text-[#00f0ff] uppercase tracking-widest">
+                [01 // IDENTITY]
+              </span>
+              <span className="text-[#849495] font-code-sm text-xs pl-2 border-l border-[#3b494b]/40">
+                STATUS: NOMINAL
+              </span>
+            </div>
+
+            {/* Ember Particle Flow Control Pill Option */}
+            <button
+              type="button"
+              onClick={handleToggleFlowMode}
+              title="Toggle Particle Warp/Drift Velocity"
+              aria-label={`Toggle background particle speed, currently ${flowMode}`}
+              aria-pressed={flowMode === "warp"}
+              className={`group relative flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg border transition-all duration-300 focus:outline-none cursor-pointer select-none backdrop-blur-md ${
+                flowMode === "warp"
+                  ? "border-violet-400/60 bg-gradient-to-r from-violet-950/40 to-cyan-950/40 hover:border-violet-300 shadow-[0_0_18px_rgba(168,85,247,0.35)]"
+                  : "border-cyan-500/40 bg-cyan-950/30 hover:border-cyan-400 shadow-[0_0_12px_-2px_rgba(6,182,212,0.25)]"
+              }`}
+            >
+              <svg
+                className={`w-3.5 h-3.5 ${
+                  flowMode === "warp" ? "text-violet-300 animate-pulse" : "text-cyan-400 group-hover:rotate-12"
+                } transition-transform duration-300`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span className="font-mono text-[11px] tracking-wider font-semibold text-slate-300">
+                <span className="text-slate-400">FLOW: </span>
+                <span className={flowMode === "warp" ? "text-violet-300 font-bold" : "text-cyan-300 font-bold"}>
+                  {flowMode === "warp" ? "WARP" : "DRIFT"}
+                </span>
+              </span>
+              <span className="relative flex h-1.5 w-1.5 ml-0.5">
+                <span
+                  className={`animate-ping absolute inline-flex h-full w-full rounded-full ${
+                    flowMode === "warp" ? "bg-violet-400 opacity-90" : "bg-cyan-400 opacity-75"
+                  }`}
+                />
+                <span
+                  className={`relative inline-flex rounded-full h-1.5 w-1.5 ${
+                    flowMode === "warp" ? "bg-violet-400" : "bg-cyan-400"
+                  } transition-colors duration-300`}
+                />
+              </span>
+            </button>
           </div>
 
           <h2 className="font-headline-lg text-3xl md:text-5xl font-bold text-[#e3e1e9] mb-12 reveal-item stagger-1 is-revealed">

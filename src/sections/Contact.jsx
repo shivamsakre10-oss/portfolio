@@ -753,15 +753,15 @@ STATUS SUMMARY:
       {isModalOpen && (
         <div
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-6 transition-all duration-300 animate-fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 md:p-6 transition-all duration-300 animate-fade-in overflow-y-auto"
           role="dialog"
         >
           {/* Ambient Modal Backdrop */}
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={closeModal} />
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-md" onClick={closeModal} />
 
           {/* Cyber Modal Card Container */}
           <div
-            className="relative w-full max-w-2xl bg-[#191b23]/95 border border-[#00e5ff]/40 rounded-2xl p-6 sm:p-8 backdrop-blur-2xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] cyan-glow z-10 scanlines"
+            className="relative w-full max-w-2xl bg-[#12141c]/98 border border-[#00e5ff]/40 rounded-2xl p-5 sm:p-7 backdrop-blur-2xl shadow-[0_25px_70px_rgba(0,0,0,0.9)] cyan-glow z-10 scanlines my-auto max-h-[92vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Corner Cyber Accents */}
@@ -771,199 +771,180 @@ STATUS SUMMARY:
             <div className="absolute -bottom-px -right-px w-5 h-5 border-b-2 border-r-2 border-[#00e5ff] pointer-events-none" />
 
             {/* Modal Header & Telemetry */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/10 gap-2 mb-5">
-              <div className="flex items-center gap-2.5">
-                <span className="relative flex h-3 w-3">
+            <div className="flex items-center justify-between pb-3.5 border-b border-white/10 gap-3 mb-4 shrink-0">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="relative flex h-2.5 w-2.5 shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00e5ff] opacity-75" />
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-[#00e5ff] shadow-[0_0_8px_#00e5ff]" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00e5ff] shadow-[0_0_8px_#00e5ff]" />
                 </span>
-                <span className="font-code-sm text-xs text-[#00e5ff] font-bold tracking-wider uppercase">
+                <span className="font-code-sm text-xs text-[#00e5ff] font-bold tracking-wider uppercase truncate">
                   // TRANSMISSION_DISPATCH: CONFIRMED
                 </span>
               </div>
-              <div className="flex items-center flex-wrap gap-2">
-                <div className="flex items-center gap-1.5 bg-[#0b0e15] px-2.5 py-1 rounded border border-white/5">
-                  <span className="font-code-sm text-[11px] text-slate-400">
-                    PKG_ID: <span className="text-[#00e5ff] font-bold">#TX-8924-NEXUS</span>
-                  </span>
-                  <button
-                    aria-label="Copy Telemetry Receipt"
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white/5 hover:bg-[#00e5ff]/20 border border-white/10 hover:border-[#00e5ff]/70 text-slate-300 hover:text-[#00e5ff] font-code-sm text-[10px] font-bold tracking-wider transition-all duration-200 active:scale-95 ml-1 cursor-pointer"
-                    onClick={handleCopyReceipt}
-                    title="Copy Telemetry Receipt"
-                    type="button"
-                  >
-                    <span className="material-symbols-outlined text-[13px]">content_copy</span>
-                    <span>{headerCopyStatus}</span>
-                  </button>
-                  <button
-                    aria-label="Export Telemetry Log"
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white/5 hover:bg-[#00e5ff]/20 border border-white/10 hover:border-[#00e5ff]/70 text-slate-300 hover:text-[#00e5ff] font-code-sm text-[10px] font-bold tracking-wider transition-all duration-200 active:scale-95 ml-1 cursor-pointer"
-                    onClick={handleExportLog}
-                    title="Export Telemetry Log (.TXT)"
-                    type="button"
-                  >
-                    <span className="material-symbols-outlined text-[13px]">download</span>
-                    <span>{headerExportStatus}</span>
-                  </button>
-                </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="hidden sm:inline-flex font-code-sm text-[11px] text-slate-400 bg-[#0b0e15] px-2.5 py-1 rounded border border-white/10">
+                  PKG: <span className="text-[#00e5ff] font-bold ml-1">#TX-8924</span>
+                </span>
                 <button
                   aria-label="Dismiss Modal"
-                  className="text-slate-400 hover:text-[#00e5ff] p-1 rounded transition-colors ml-1 cursor-pointer"
+                  className="size-8 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95"
                   onClick={closeModal}
                   type="button"
                 >
-                  <span className="material-symbols-outlined text-[20px]">close</span>
+                  <span className="material-symbols-outlined text-[18px]">close</span>
                 </button>
               </div>
             </div>
 
-            {/* Hero Status & Badge Section */}
-            <div className="flex items-start gap-4 mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-[#00e5ff]/10 border border-[#00e5ff]/50 flex items-center justify-center text-[#00e5ff] cyan-glow-subtle shrink-0">
-                <span className="material-symbols-outlined text-[32px] animate-pulse">verified_user</span>
+            {/* Scrollable Modal Content */}
+            <div className="overflow-y-auto pr-1 flex-1">
+              {/* Hero Status & Badge Section */}
+              <div className="flex items-start gap-3.5 sm:gap-4 mb-4 shrink-0">
+                <div className="w-12 h-12 rounded-xl bg-[#00e5ff]/10 border border-[#00e5ff]/40 flex items-center justify-center text-[#00e5ff] cyan-glow-subtle shrink-0 shadow-[0_0_20px_rgba(0,229,255,0.2)]">
+                  <span className="material-symbols-outlined text-[28px] animate-pulse">verified_user</span>
+                </div>
+                <div className="min-w-0">
+                  <h4 className="font-headline-sm text-lg sm:text-xl text-white font-bold tracking-tight">
+                    Payload Accepted by Mail Server
+                  </h4>
+                  <p className="font-body-sm text-xs sm:text-sm text-slate-300 mt-0.5 leading-relaxed">
+                    Transmission successfully accepted by mail infrastructure. Routed to{" "}
+                    <span className="text-[#00e5ff] font-semibold break-all">shivamsakre10@gmail.com</span> for engineer review within 24 hours.
+                  </p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-headline-sm text-xl sm:text-2xl text-white font-bold tracking-tight">
-                  Payload Accepted by Mail Server
-                </h4>
-                <p className="font-body-sm text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed">
-                  Transmission successfully accepted by mail infrastructure. Routed to{" "}
-                  <span className="text-[#00e5ff] font-semibold">shivamsakre10@gmail.com</span> for engineer review within 24 hours.
-                </p>
-              </div>
-            </div>
 
-            {/* Terminal Telemetry Log Box */}
-            <div className="rounded-xl bg-[#0b0e15]/90 border border-white/10 p-4 font-code-md text-[13px] text-slate-200 space-y-1.5 mb-4 overflow-hidden relative">
-              <div className="flex items-center justify-between text-slate-400 text-[11px] font-code-sm border-b border-white/10 pb-2 mb-2">
-                <span className="flex items-center gap-1.5">
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#00e5ff]" />
-                  DISPATCH TELEMETRY STREAM
-                </span>
-                <span className="text-[#00e5ff] font-bold">NODE: AP-SOUTH-1</span>
-              </div>
-              <div className="text-slate-300 flex items-center gap-2">
-                <span className="text-slate-500">&gt;</span>
-                <span>INITIATING SECURE SOCKET...</span>
-                <span className="text-[#00e5ff] font-bold ml-auto">[OK]</span>
-              </div>
-              <div className="text-slate-300 flex items-center gap-2">
-                <span className="text-slate-500">&gt;</span>
-                <span>PAYLOAD ENCRYPTED VIA AES-256-GCM...</span>
-                <span className="text-[#00e5ff] font-bold ml-auto">[OK]</span>
-              </div>
-              <div className="text-slate-300 flex items-center gap-2">
-                <span className="text-slate-500">&gt;</span>
-                <span>ROUTING VIA NODE: AP-SOUTH-1...</span>
-                <span className="text-[#e0b6ff] font-bold ml-auto">[DELIVERED]</span>
-              </div>
-              <div className="text-[#00e5ff] font-semibold flex items-center gap-2 pt-1 border-t border-white/5">
-                <span className="text-slate-500">&gt;</span>
-                <span>SLA CLOCK INITIALIZED: &lt; 24 HOURS RESPONSE WINDOW</span>
-              </div>
-              {terminalLogs.map((logMsg, idx) => (
-                <div
-                  className="text-cyan-300 flex items-center gap-2 pt-1 border-t border-white/5 animate-pulse"
-                  key={idx}
-                >
+              {/* Terminal Telemetry Log Box */}
+              <div className="rounded-xl bg-[#0b0e15]/95 border border-white/10 p-3 sm:p-3.5 font-code-md text-xs sm:text-[13px] text-slate-200 space-y-1.5 mb-4 overflow-hidden relative shrink-0">
+                <div className="flex items-center justify-between text-slate-400 text-[10px] sm:text-[11px] font-code-sm border-b border-white/10 pb-1.5 mb-2">
+                  <span className="flex items-center gap-1.5">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#00e5ff]" />
+                    DISPATCH TELEMETRY STREAM
+                  </span>
+                  <span className="text-[#00e5ff] font-bold">NODE: AP-SOUTH-1</span>
+                </div>
+                <div className="text-slate-300 flex items-center justify-between gap-2">
+                  <span className="flex items-center gap-1.5 truncate">
+                    <span className="text-slate-500">&gt;</span>
+                    <span>INITIATING SECURE SOCKET...</span>
+                  </span>
+                  <span className="text-[#00e5ff] font-bold shrink-0">[OK]</span>
+                </div>
+                <div className="text-slate-300 flex items-center justify-between gap-2">
+                  <span className="flex items-center gap-1.5 truncate">
+                    <span className="text-slate-500">&gt;</span>
+                    <span>PAYLOAD ENCRYPTED VIA AES-256-GCM...</span>
+                  </span>
+                  <span className="text-[#00e5ff] font-bold shrink-0">[OK]</span>
+                </div>
+                <div className="text-slate-300 flex items-center justify-between gap-2">
+                  <span className="flex items-center gap-1.5 truncate">
+                    <span className="text-slate-500">&gt;</span>
+                    <span>ROUTING VIA NODE: AP-SOUTH-1...</span>
+                  </span>
+                  <span className="text-[#e0b6ff] font-bold shrink-0">[DELIVERED]</span>
+                </div>
+                <div className="text-[#00e5ff] font-semibold flex items-center gap-1.5 pt-1 border-t border-white/5 truncate">
                   <span className="text-slate-500">&gt;</span>
-                  <span>{logMsg}</span>
-                  <span className="text-[#00e5ff] ml-auto font-bold">[VERIFIED]</span>
+                  <span className="truncate">SLA CLOCK INITIALIZED: &lt; 24 HOURS RESPONSE WINDOW</span>
                 </div>
-              ))}
-            </div>
-
-            {/* Sleek Interactive Email Dispatch Strip */}
-            <div className="rounded-xl bg-[#0b0e15]/80 border border-[#00e5ff]/20 p-3 mb-5 transition-all duration-300">
-              <div className="flex items-center justify-between text-[11px] font-code-sm text-slate-400 mb-2">
-                <span className="flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[14px] text-[#00e5ff]">
-                    mark_email_read
-                  </span>
-                  <span>DISPATCH RECEIPT TO INBOX</span>
-                </span>
-                <span className="text-slate-400 uppercase text-[10px]">
-                  {receiptStatusText}
-                </span>
-              </div>
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                <div className="relative flex-1">
-                  <input
-                    className="w-full bg-[#10131a] text-white font-code-sm text-xs placeholder:text-slate-500 border border-white/10 rounded-lg px-3 py-2 focus:outline-none focus:border-[#00e5ff] focus:ring-1 focus:ring-[#00e5ff] transition-all"
-                    disabled={isDispatchingEmail}
-                    onChange={(e) => setReceiptEmail(e.target.value)}
-                    placeholder="jordan@enterprise.io"
-                    ref={receiptEmailInputRef}
-                    type="email"
-                    value={receiptEmail}
-                  />
-                  <span className="material-symbols-outlined absolute right-2.5 top-2 text-slate-500 text-[16px] pointer-events-none">
-                    mail
-                  </span>
-                </div>
-                <button
-                  className={`px-4 py-2 rounded-lg font-code-sm text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 ${
-                    receiptBtnText === "EMAIL ACCEPTED BY MAIL SERVER"
-                      ? "bg-emerald-500 text-slate-950 shadow-[0_0_16px_rgba(16,185,129,0.5)]"
-                      : receiptBtnText.includes("FAILED")
-                      ? "bg-red-600 text-white shadow-[0_0_16px_rgba(239,68,68,0.5)]"
-                      : "bg-[#00e5ff]/10 hover:bg-[#00e5ff]/20 border border-[#00e5ff]/40 hover:border-[#00e5ff] text-[#00e5ff]"
-                  }`}
-                  disabled={isDispatchingEmail}
-                  onClick={handleSendEmailReceipt}
-                  type="button"
-                >
-                  <span
-                    className={`material-symbols-outlined text-[15px] ${
-                      isDispatchingEmail ? "animate-spin" : ""
-                    }`}
+                {terminalLogs.map((logMsg, idx) => (
+                  <div
+                    className="text-cyan-300 flex items-center justify-between gap-2 pt-1 border-t border-white/5 animate-pulse"
+                    key={idx}
                   >
-                    {isDispatchingEmail
-                      ? "sync"
-                      : receiptBtnText === "EMAIL ACCEPTED BY MAIL SERVER"
-                      ? "verified"
-                      : receiptBtnText.includes("FAILED")
-                      ? "error"
-                      : "send"}
+                    <span className="flex items-center gap-1.5 truncate">
+                      <span className="text-slate-500">&gt;</span>
+                      <span className="truncate">{logMsg}</span>
+                    </span>
+                    <span className="text-[#00e5ff] font-bold shrink-0">[VERIFIED]</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Sleek Interactive Email Dispatch Strip */}
+              <div className="rounded-xl bg-[#0b0e15]/80 border border-[#00e5ff]/20 p-3 mb-4 shrink-0">
+                <div className="flex items-center justify-between text-[11px] font-code-sm text-slate-400 mb-2">
+                  <span className="flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[15px] text-[#00e5ff]">
+                      mark_email_read
+                    </span>
+                    <span className="font-semibold text-slate-300">DISPATCH RECEIPT TO INBOX</span>
                   </span>
-                  <span>{receiptBtnText}</span>
-                </button>
+                  <span className="text-slate-400 uppercase text-[10px] tracking-wider font-mono">
+                    {receiptStatusText}
+                  </span>
+                </div>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                  <div className="relative flex-1">
+                    <input
+                      className="w-full bg-[#10131a] text-white font-code-sm text-xs placeholder:text-slate-500 border border-white/10 rounded-lg pl-3 pr-8 py-2.5 focus:outline-none focus:border-[#00e5ff] focus:ring-1 focus:ring-[#00e5ff] transition-all"
+                      disabled={isDispatchingEmail}
+                      onChange={(e) => setReceiptEmail(e.target.value)}
+                      placeholder="your-email@domain.com"
+                      ref={receiptEmailInputRef}
+                      type="email"
+                      value={receiptEmail}
+                    />
+                    <span className="material-symbols-outlined absolute right-2.5 top-2.5 text-slate-500 text-[16px] pointer-events-none">
+                      mail
+                    </span>
+                  </div>
+                  <button
+                    className={`px-4 py-2.5 rounded-lg font-code-sm text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 ${
+                      receiptBtnText === "EMAIL ACCEPTED BY MAIL SERVER"
+                        ? "bg-emerald-500 text-slate-950 shadow-[0_0_16px_rgba(16,185,129,0.5)]"
+                        : receiptBtnText.includes("FAILED")
+                        ? "bg-red-600 text-white shadow-[0_0_16px_rgba(239,68,68,0.5)]"
+                        : "bg-[#00e5ff]/10 hover:bg-[#00e5ff]/25 border border-[#00e5ff]/40 hover:border-[#00e5ff] text-[#00e5ff] shadow-[0_0_10px_rgba(0,229,255,0.15)]"
+                    }`}
+                    disabled={isDispatchingEmail}
+                    onClick={handleSendEmailReceipt}
+                    type="button"
+                  >
+                    <span
+                      className={`material-symbols-outlined text-[16px] ${
+                        isDispatchingEmail ? "animate-spin" : ""
+                      }`}
+                    >
+                      {isDispatchingEmail
+                        ? "sync"
+                        : receiptBtnText === "EMAIL ACCEPTED BY MAIL SERVER"
+                        ? "verified"
+                        : receiptBtnText.includes("FAILED")
+                        ? "error"
+                        : "send"}
+                    </span>
+                    <span>{receiptBtnText}</span>
+                  </button>
+                </div>
               </div>
             </div>
 
-            {/* Modal Action Controls */}
-            <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3 pt-2">
-              <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+            {/* Modal Action Controls (Fixed Alignment, No Cut-Offs) */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3.5 border-t border-white/10 shrink-0">
+              <div className="flex items-center gap-2">
                 <button
-                  className="flex-1 sm:flex-initial px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white font-code-sm text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+                  className="flex-1 sm:flex-initial px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white font-code-sm text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
                   onClick={handleCopyReceipt}
                   type="button"
                 >
-                  <span className="material-symbols-outlined text-[15px]">receipt_long</span>
-                  <span>COPY RECEIPT</span>
+                  <span className="material-symbols-outlined text-[16px]">content_copy</span>
+                  <span>{headerCopyStatus || "COPY RECEIPT"}</span>
                 </button>
                 <button
-                  className="flex-1 sm:flex-initial px-3 py-2 rounded-xl bg-[#00e5ff]/10 hover:bg-[#00e5ff]/20 border border-[#00e5ff]/40 hover:border-[#00e5ff] text-[#00e5ff] font-code-sm text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+                  className="flex-1 sm:flex-initial px-3.5 py-2.5 rounded-xl bg-[#00e5ff]/10 hover:bg-[#00e5ff]/20 border border-[#00e5ff]/40 hover:border-[#00e5ff] text-[#00e5ff] font-code-sm text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
                   onClick={handleExportLog}
                   title="Download Formatted Transmission Telemetry Log"
                   type="button"
                 >
-                  <span className="material-symbols-outlined text-[15px]">download</span>
-                  <span>{modalDownloadStatus}</span>
-                </button>
-                <button
-                  className="flex-1 sm:flex-initial px-3 py-2 rounded-xl bg-white/5 hover:bg-[#00e5ff]/20 border border-white/10 hover:border-[#00e5ff]/70 text-slate-300 hover:text-[#00e5ff] font-code-sm text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
-                  onClick={handleEmailReceiptFocus}
-                  title="Focus email dispatch prompt"
-                  type="button"
-                >
-                  <span className="material-symbols-outlined text-[15px]">alternate_email</span>
-                  <span>EMAIL RECEIPT</span>
+                  <span className="material-symbols-outlined text-[16px]">download</span>
+                  <span>{modalDownloadStatus || "EXPORT .TXT LOG"}</span>
                 </button>
               </div>
+
               <button
-                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#00e5ff] text-[#00363d] font-code-sm text-[11px] font-bold uppercase tracking-wider transition-all cyan-glow hover:brightness-110 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#00e5ff] to-[#00c8e0] text-[#00363d] font-code-sm text-xs font-bold uppercase tracking-wider transition-all shadow-[0_0_18px_rgba(0,229,255,0.4)] hover:shadow-[0_0_24px_rgba(0,229,255,0.65)] hover:brightness-110 active:scale-95 flex items-center justify-center gap-2 cursor-pointer shrink-0"
                 onClick={closeModal}
                 type="button"
               >
