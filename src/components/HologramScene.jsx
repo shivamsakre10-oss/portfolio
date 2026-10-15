@@ -21,9 +21,14 @@ const HologramScene = () => {
     camera.position.set(0, 0, 9);
 
     // 3. Renderer
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
+    const isSmallScreen = window.innerWidth < 768;
+    const renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      antialias: !isSmallScreen,
+      powerPreference: "high-performance",
+    });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isSmallScreen ? 1.25 : 1.5));
     renderer.domElement.style.width = "100%";
     renderer.domElement.style.height = "100%";
     renderer.domElement.style.pointerEvents = "none";
@@ -188,23 +193,32 @@ const HologramScene = () => {
       targetScrollProgress = Math.min(Math.max(scrollY / heroH, 0), 1);
     };
 
-    const handleResize = () => {
-      if (!container) return;
+    let resizeTimer;
+    const applyResize = () => {
       const w = container.clientWidth || window.innerWidth;
       const h = container.clientHeight || window.innerHeight;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
+      renderer.setSize(w, h, false);
+    };
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(applyResize, 120);
     };
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", handleResize);
 
-    // 9. Render Loop
+    // 9. Render Loop — only runs while the hero is on screen and the tab is visible
     const clock = new THREE.Clock();
+    let inView = true;
 
     const animate = () => {
+      if (!inView || document.hidden) {
+        animationFrameId = null;
+        return;
+      }
       animationFrameId = requestAnimationFrame(animate);
       const t = clock.getElapsedTime();
 
@@ -278,10 +292,25 @@ const HologramScene = () => {
       renderer.render(scene, camera);
     };
 
+    const resume = () => {
+      if (animationFrameId == null && inView && !document.hidden) {
+        animationFrameId = requestAnimationFrame(animate);
+      }
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      resume();
+    });
+    observer.observe(container);
+    document.addEventListener("visibilitychange", resume);
+
     animate();
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      clearTimeout(resizeTimer);
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", resume);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);

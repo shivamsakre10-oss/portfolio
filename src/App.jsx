@@ -1,6 +1,4 @@
-import { useState, useEffect, useRef } from "react";
-import HologramScene from "./components/HologramScene";
-import PortfolioCopilot from "./components/PortfolioCopilot";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import NavBar from "./components/NavBar";
 import StatsCard from "./components/StatsCard";
 import CareerTrajectory from "./sections/CareerTrajectory";
@@ -15,6 +13,10 @@ import Footer from "./sections/Footer";
 import CyberMiddleBody from "./components/CyberMiddleBody";
 import { Users, ShoppingBag, Zap } from "lucide-react";
 import { smoothScrollTo } from "./utils/smoothScroll";
+
+// Heavy, non-critical chunks: three.js hero scene and the floating chat widget
+const HologramScene = lazy(() => import("./components/HologramScene"));
+const PortfolioCopilot = lazy(() => import("./components/PortfolioCopilot"));
 
 const ROTATING_PHRASES = [
   "Digital Experiences",
@@ -156,16 +158,43 @@ const App = () => {
 
   // 2. Global Scroll Handler (Top Progress Bar)
   useEffect(() => {
-    const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (totalHeight > 0 && progressBarRef.current) {
-        const progress = (window.scrollY / totalHeight) * 100;
-        progressBarRef.current.style.width = `${progress}%`;
+    // Scroll height is cached (re-measured on resize / content growth) so the
+    // scroll handler never forces a synchronous layout. The bar is moved with a
+    // compositor-only transform instead of animating width.
+    let maxScroll = 0;
+    let ticking = false;
+
+    const measure = () => {
+      maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    };
+    const paint = () => {
+      ticking = false;
+      if (maxScroll > 0 && progressBarRef.current) {
+        const progress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+        progressBarRef.current.style.transform = `scaleX(${progress})`;
       }
     };
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(paint);
+      }
+    };
+    const handleResize = () => {
+      measure();
+      handleScroll();
+    };
 
+    measure();
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(document.body);
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   // 3. Scroll Reveal Observer
@@ -184,6 +213,21 @@ const App = () => {
     const elements = document.querySelectorAll(".reveal-item");
     elements.forEach((el) => observer.observe(el));
 
+    return () => observer.disconnect();
+  }, []);
+
+  // 3b. Pause infinite CSS animations for sections that are off-screen
+  useEffect(() => {
+    const sections = document.querySelectorAll("section, footer");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          entry.target.classList.toggle("anim-paused", !entry.isIntersecting);
+        });
+      },
+      { rootMargin: "150px 0px" }
+    );
+    sections.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
 
@@ -234,7 +278,8 @@ const App = () => {
         <div
           ref={progressBarRef}
           id="scroll-progress-bar"
-          className="h-full w-0 bg-gradient-to-r from-[#00f0ff] via-[#00dbe9] to-[#8b5cf6] shadow-[0_0_12px_rgba(0,240,255,0.8)] transition-all duration-75 ease-out"
+          style={{ transform: "scaleX(0)" }}
+          className="h-full w-full origin-left will-change-transform bg-gradient-to-r from-[#00f0ff] via-[#00dbe9] to-[#8b5cf6] shadow-[0_0_12px_rgba(0,240,255,0.8)]"
         />
       </div>
 
@@ -258,7 +303,9 @@ const App = () => {
         >
           {/* Three.js 3D Background */}
           <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
-            <HologramScene />
+            <Suspense fallback={null}>
+              <HologramScene />
+            </Suspense>
           </div>
 
           {/* Pill Badge */}
@@ -1490,7 +1537,9 @@ const App = () => {
       <Footer />
 
       {/* Portfolio AI Copilot Assistant Widget */}
-      <PortfolioCopilot />
+      <Suspense fallback={null}>
+        <PortfolioCopilot />
+      </Suspense>
     </div>
   );
 };

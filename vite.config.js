@@ -130,4 +130,18 @@ function apiDevMiddleware() {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss(), apiDevMiddleware()],
+  build: {
+    rollupOptions: {
+      output: {
+        // Keep large, rarely-changing vendors in their own cacheable chunks
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return undefined;
+          if (id.includes("/three/")) return "three";
+          if (id.includes("/gsap/")) return "gsap";
+          if (id.includes("framer-motion") || id.includes("/motion-")) return "motion";
+          return undefined;
+        },
+      },
+    },
+  },
 });

@@ -13,14 +13,28 @@ export default function CyberMiddleBody({ children }) {
   const wrapperRef = useRef(null);
   const canvasContainerRef = useRef(null);
   const canvasRef = useRef(null);
+  // Shared between the scroll tracker and the render loop: the ember canvas only
+  // needs to animate while the middle body is actually on screen.
+  const visibleRef = useRef(false);
+  const startLoopRef = useRef(null);
 
   // Scroll boundary tracker: smoothly feathers the fixed particle canvas & spotlights
   // using CSS mask-image so they seamlessly dissolve in and out without ANY hard cut lines
   // (starts smoothly after Hero, ends smoothly before Footer)
   useEffect(() => {
     let ticking = false;
+    let lastMask = null;
+
+    const setMask = (el, mask) => {
+      // Rewriting an identical mask forces a repaint of the whole fixed layer
+      if (mask === lastMask) return;
+      lastMask = mask;
+      el.style.maskImage = mask;
+      el.style.webkitMaskImage = mask;
+    };
 
     const updateClip = () => {
+      ticking = false;
       if (!wrapperRef.current || !canvasContainerRef.current) return;
       const rect = wrapperRef.current.getBoundingClientRect();
       const vh = window.innerHeight;
@@ -28,11 +42,15 @@ export default function CyberMiddleBody({ children }) {
       // Check if any portion of the middle body is inside viewport
       if (rect.bottom <= 0 || rect.top >= vh) {
         canvasContainerRef.current.style.opacity = "0";
-        canvasContainerRef.current.style.maskImage = "none";
-        canvasContainerRef.current.style.webkitMaskImage = "none";
+        setMask(canvasContainerRef.current, "none");
+        visibleRef.current = false;
       } else {
         canvasContainerRef.current.style.opacity = "1";
-        
+        if (!visibleRef.current) {
+          visibleRef.current = true;
+          startLoopRef.current?.();
+        }
+
         // Soft feathering zone (140px) eliminates hard cutting of blur spotlights and embers
         const feather = 140;
         const t0 = Math.max(0, Math.min(vh, rect.top));
@@ -40,12 +58,13 @@ export default function CyberMiddleBody({ children }) {
         const b0 = Math.max(0, Math.min(vh, rect.bottom - feather));
         const b1 = Math.max(0, Math.min(vh, rect.bottom));
 
-        const mask = `linear-gradient(to bottom, transparent 0px, transparent ${t0}px, black ${t1}px, black ${b0}px, transparent ${b1}px, transparent ${vh}px)`;
-        canvasContainerRef.current.style.maskImage = mask;
-        canvasContainerRef.current.style.webkitMaskImage = mask;
-        canvasContainerRef.current.style.clipPath = "none";
+        // Fully inside the body: no feathering needed, drop the mask entirely
+        const mask =
+          rect.top <= 0 && rect.bottom >= vh
+            ? "none"
+            : `linear-gradient(to bottom, transparent 0px, transparent ${t0}px, black ${t1}px, black ${b0}px, transparent ${b1}px, transparent ${vh}px)`;
+        setMask(canvasContainerRef.current, mask);
       }
-      ticking = false;
     };
 
     const handleScroll = () => {
@@ -109,8 +128,10 @@ export default function CyberMiddleBody({ children }) {
     }
 
     function createParticle(initialYRandom = true) {
-      const color = EMBER_COLORS[Math.floor(Math.random() * EMBER_COLORS.length)];
+      const colorIndex = Math.floor(Math.random() * EMBER_COLORS.length);
+      const color = EMBER_COLORS[colorIndex];
       return {
+        colorIndex,
         x: Math.random() * (width || window.innerWidth),
         y: initialYRandom ? Math.random() * (height || 1000) : (height || 1000) + 10 + Math.random() * 20,
         prevY: 0,
@@ -200,8 +221,29 @@ export default function CyberMiddleBody({ children }) {
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     window.addEventListener("mouseleave", handleMouseLeave);
 
+    // Pre-rendered radial glow sprites (one per ember colour). Replaces per-particle
+    // ctx.shadowBlur, the most expensive 2D canvas operation in this loop.
+    const GLOW_SIZE = 64;
+    const glowSprites = EMBER_COLORS.map((c) => {
+      const sprite = document.createElement("canvas");
+      sprite.width = sprite.height = GLOW_SIZE;
+      const g = sprite.getContext("2d");
+      const half = GLOW_SIZE / 2;
+      const grad = g.createRadialGradient(half, half, 0, half, half, half);
+      grad.addColorStop(0, `rgba(${c.r}, ${c.g}, ${c.b}, 1)`);
+      grad.addColorStop(0.25, `rgba(${c.r}, ${c.g}, ${c.b}, 0.45)`);
+      grad.addColorStop(1, `rgba(${c.r}, ${c.g}, ${c.b}, 0)`);
+      g.fillStyle = grad;
+      g.fillRect(0, 0, GLOW_SIZE, GLOW_SIZE);
+      return sprite;
+    });
+
     let tick = 0;
     function render() {
+      if (!visibleRef.current || document.hidden) {
+        animationId = null;
+        return;
+      }
       ctx.clearRect(0, 0, width, height);
       tick++;
 
@@ -279,8 +321,6 @@ export default function CyberMiddleBody({ children }) {
         const glowBoost = Math.min(0.35, impulseEnergy * 0.08) + (isWarp ? 0.15 : 0);
         const currentAlpha = Math.max(0.08, Math.min(0.98, p.baseAlpha + shimmer * 0.16 + glowBoost));
 
-        ctx.save();
-
         if (isWarp && !isMotionReduced) {
           ctx.beginPath();
           const trailLength = Math.max(8, p.baseVy * speedMult * 3.5 + Math.abs(p.impulseVy) * 1.5);
@@ -292,25 +332,36 @@ export default function CyberMiddleBody({ children }) {
           ctx.stroke();
         }
 
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius * (isWarp ? 1.2 : 1), 0, Math.PI * 2);
+        const r = p.radius * (isWarp ? 1.2 : 1);
 
         if (p.hasGlow && !isMotionReduced) {
-          ctx.shadowColor = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${currentAlpha * 0.9})`;
-          ctx.shadowBlur = p.radius * (isWarp ? 8 : 4 + Math.min(4, impulseEnergy * 1.2));
+          const glowR = r + r * (isWarp ? 8 : 4 + Math.min(4, impulseEnergy * 1.2)) * 0.6 + 2;
+          ctx.globalAlpha = currentAlpha * 0.9;
+          ctx.drawImage(glowSprites[p.colorIndex], p.x - glowR, p.y - glowR, glowR * 2, glowR * 2);
         }
 
-        ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${currentAlpha})`;
+        ctx.globalAlpha = currentAlpha;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgb(${p.color.r}, ${p.color.g}, ${p.color.b})`;
         ctx.fill();
-        ctx.restore();
       }
+      ctx.globalAlpha = 1;
 
       animationId = requestAnimationFrame(render);
     }
 
+    startLoopRef.current = () => {
+      if (animationId === null) animationId = requestAnimationFrame(render);
+    };
+    const onVisibility = () => {
+      if (!document.hidden) startLoopRef.current?.();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
     resize();
     initParticles();
-    animationId = requestAnimationFrame(render);
+    if (visibleRef.current) startLoopRef.current();
 
     let resizeDebounce;
     const onResize = () => {
@@ -326,6 +377,8 @@ export default function CyberMiddleBody({ children }) {
 
     return () => {
       cancelAnimationFrame(animationId);
+      startLoopRef.current = null;
+      document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseleave", handleMouseLeave);
       window.removeEventListener("resize", onResize);

@@ -107,7 +107,7 @@ const AppShowcase = () => {
         >
           {/* Top Dashboard Visual Container — matching 2nd and 3rd project style */}
           <div className="relative w-full h-56 sm:h-64 md:h-72 lg:h-80 rounded-xl overflow-hidden bg-gradient-to-br from-[#0e1626] to-[#080c14] border border-[#3b494b]/30 mb-4 group/mockup">
-            <img
+            <img loading="lazy" decoding="async"
               src="/images/ricroot-showcase.png"
               alt="RicRoot Recruitment Dashboard"
               className="w-full h-full object-cover object-top group-hover/mockup:scale-105 transition-transform duration-500 ease-out"
@@ -316,7 +316,7 @@ const AppShowcase = () => {
             className="flex-1 rounded-2xl bg-[#0d121d]/90 border border-[#3b494b]/40 hover:border-[#00f0ff]/60 p-5 sm:p-6 backdrop-blur-xl shadow-2xl transition-all duration-300 group flex flex-col justify-between overflow-hidden"
           >
             <div className="relative w-full h-48 sm:h-52 md:h-56 rounded-xl overflow-hidden bg-gradient-to-br from-[#0e1626] to-[#080c14] border border-[#3b494b]/30 mb-4">
-              <img
+              <img loading="lazy" decoding="async"
                 src="/images/sbwork-showcase.png"
                 alt="SB Work | Freelancer Marketplace"
                 className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500 ease-out"
@@ -368,7 +368,7 @@ const AppShowcase = () => {
             className="flex-1 rounded-2xl bg-[#0d121d]/90 border border-[#3b494b]/40 hover:border-[#d0bcff]/60 p-5 sm:p-6 backdrop-blur-xl shadow-2xl transition-all duration-300 group flex flex-col justify-between overflow-hidden"
           >
             <div className="relative w-full h-48 sm:h-52 md:h-56 rounded-xl overflow-hidden bg-gradient-to-br from-[#0e1626] to-[#080c14] border border-[#3b494b]/30 mb-4">
-              <img
+              <img loading="lazy" decoding="async"
                 src="/images/online-quiz-showcase.png"
                 alt="Online Quiz Web Application"
                 className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500 ease-out"

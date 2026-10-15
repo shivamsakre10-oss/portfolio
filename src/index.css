@@ -169,7 +169,26 @@ body {
 
 .reveal-item.is-revealed {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: none;
+  /* release the compositor layer once the entrance has played */
+  will-change: auto;
+}
+
+/* Sections scrolled out of view: freeze their infinite animations so only
+   what is on screen costs style/paint work. Toggled by App's observer. */
+.anim-paused,
+.anim-paused *,
+.anim-paused *::before,
+.anim-paused *::after {
+  animation-play-state: paused !important;
+}
+
+/* Backdrop blur cost scales with radius; the cards behind it are ~90% opaque
+   so a smaller radius is visually near-identical. */
+.backdrop-blur-xl,
+.backdrop-blur-lg,
+.backdrop-blur-md {
+  --tw-backdrop-blur: blur(8px);
 }
 
 .stagger-1 { transition-delay: 0.08s; }
@@ -374,8 +393,8 @@ body {
 /* Glass Card Styles */
 .glass-card {
   background: rgba(18, 19, 24, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
 }
@@ -522,7 +541,7 @@ body {
               box-shadow 0.25s ease, 
               border-color 0.25s ease, 
               background-color 0.25s ease;
-  will-change: transform, box-shadow;
+  will-change: auto;
   position: relative;
   overflow: hidden;
 }
@@ -746,8 +765,8 @@ body {
 
 [data-purpose="capabilities-showcase"] .glass-card {
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.72) 0%, rgba(7, 11, 22, 0.88) 100%);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   position: relative;
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -852,7 +871,7 @@ body {
 /* Interactive 3D micro-lift & custom chromatic hover glow shadows */
 .phase-card {
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
-  will-change: transform, box-shadow;
+  will-change: auto;
 }
 .phase-card:hover {
   transform: translateY(-6px) scale(1.01);
@@ -925,11 +944,11 @@ body {
   position: relative;
   background: linear-gradient(180deg, rgba(26, 27, 33, 0.85) 0%, rgba(18, 19, 24, 0.95) 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
   transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
-  will-change: transform, box-shadow;
+  will-change: auto;
 }
 
 .glass-craft-card::after {
