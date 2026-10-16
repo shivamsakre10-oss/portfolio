@@ -33,11 +33,22 @@ export default function CyberMiddleBody({ children }) {
       el.style.webkitMaskImage = mask;
     };
 
+    // Wrapper geometry is cached so scrolling never forces a layout
+    let wrapTop = 0;
+    let wrapHeight = 0;
+    const measure = () => {
+      if (!wrapperRef.current) return;
+      const r = wrapperRef.current.getBoundingClientRect();
+      wrapTop = r.top + window.scrollY;
+      wrapHeight = r.height;
+    };
+
     const updateClip = () => {
       ticking = false;
       if (!wrapperRef.current || !canvasContainerRef.current) return;
-      const rect = wrapperRef.current.getBoundingClientRect();
       const vh = window.innerHeight;
+      const top = wrapTop - window.scrollY;
+      const rect = { top, bottom: top + wrapHeight };
 
       // Check if any portion of the middle body is inside viewport
       if (rect.bottom <= 0 || rect.top >= vh) {
@@ -74,13 +85,22 @@ export default function CyberMiddleBody({ children }) {
       }
     };
 
+    const handleResize = () => {
+      measure();
+      updateClip();
+    };
+
+    measure();
     updateClip();
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(wrapperRef.current);
     window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", updateClip);
+    window.addEventListener("resize", handleResize);
 
     return () => {
+      resizeObserver.disconnect();
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", updateClip);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -114,7 +134,7 @@ export default function CyberMiddleBody({ children }) {
 
     function resize() {
       if (!canvas) return;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       width = window.innerWidth;
       height = window.innerHeight;
 
@@ -315,18 +335,19 @@ export default function CyberMiddleBody({ children }) {
           ctx.stroke();
         }
 
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius * (isWarp ? 1.2 : 1), 0, Math.PI * 2);
-
+        const r = p.radius * (isWarp ? 1.2 : 1);
         if (p.hasGlow && !isMotionReduced) {
-          ctx.shadowColor = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${currentAlpha * 0.9})`;
-          ctx.shadowBlur = p.radius * (isWarp ? 8 : 4 + Math.min(4, impulseEnergy * 1.2));
+          // Cheap halo instead of per-particle shadowBlur (CPU-heavy)
+          const haloR = r * (isWarp ? 4 : 2.6 + Math.min(1.6, impulseEnergy * 0.5));
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, haloR, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${currentAlpha * 0.16})`;
+          ctx.fill();
         }
-
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${currentAlpha})`;
         ctx.fill();
-        ctx.restore();
       }
 
       animationId = requestAnimationFrame(render);

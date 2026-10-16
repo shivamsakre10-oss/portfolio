@@ -38,50 +38,61 @@ const NavBar = () => {
   // Scroll detection for transparent-to-subtle blur transition and active section spy
   useEffect(() => {
     let ticking = false;
+    // Section tops are cached (re-measured on resize / layout growth) so the
+    // scroll handler never forces a synchronous layout.
+    let tops = [];
+
+    const measure = () => {
+      const base = window.scrollY;
+      tops = NAV_ITEMS.map((item) => {
+        const el =
+          document.getElementById(item.id) ||
+          (item.id === "projects" ? document.getElementById("work") : null) ||
+          (item.id === "services" ? document.getElementById("capabilities") : null);
+        return el ? { id: item.id, top: el.getBoundingClientRect().top + base } : null;
+      }).filter(Boolean);
+    };
+
+    const update = () => {
+      ticking = false;
+      const scrollY = window.scrollY;
+      setScrolled(scrollY > 20);
+
+      if (scrollY < 120) {
+        setActiveSection("home");
+        return;
+      }
+
+      const navOffset = window.innerWidth < 768 ? 90 : 130;
+      let currentId = "home";
+      for (let i = 0; i < tops.length; i++) {
+        if (tops[i].top - scrollY <= navOffset + 60) currentId = tops[i].id;
+      }
+      setActiveSection(currentId);
+    };
 
     const handleScroll = () => {
       if (!ticking) {
-        requestAnimationFrame(() => {
-          const scrollY = window.scrollY;
-          setScrolled(scrollY > 20);
-
-          // If at the very top of the page, default to Home
-          if (scrollY < 120) {
-            setActiveSection("home");
-            ticking = false;
-            return;
-          }
-
-          // Section detection based on true viewport position
-          const navOffset = window.innerWidth < 768 ? 90 : 130;
-          let currentId = "home";
-
-          for (let i = 0; i < NAV_ITEMS.length; i++) {
-            const item = NAV_ITEMS[i];
-            const el =
-              document.getElementById(item.id) ||
-              (item.id === "projects" ? document.getElementById("work") : null) ||
-              (item.id === "services" ? document.getElementById("capabilities") : null);
-
-            if (el) {
-              const rect = el.getBoundingClientRect();
-              if (rect.top <= navOffset + 60) {
-                currentId = item.id;
-              }
-            }
-          }
-
-          setActiveSection(currentId);
-          ticking = false;
-        });
-
         ticking = true;
+        requestAnimationFrame(update);
       }
     };
+    const handleResize = () => {
+      measure();
+      handleScroll();
+    };
 
-    handleScroll();
+    measure();
+    update();
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(document.body);
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   // Update sliding indicator position for hovered or active item
@@ -164,7 +175,7 @@ const NavBar = () => {
             : "-translate-y-4 opacity-0"
         } ${
           scrolled
-            ? "py-3 bg-[#121318]/70 backdrop-blur-md border-b border-white/[0.05]"
+            ? "keep-blur py-3 bg-[#121318]/80 backdrop-blur-md border-b border-white/[0.05]"
             : "py-5 md:py-6 bg-transparent border-b border-transparent"
         }`}
       >

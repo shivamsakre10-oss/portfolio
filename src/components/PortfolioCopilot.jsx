@@ -934,7 +934,7 @@ const PortfolioCopilot = () => {
       {/* Floating Chat Drawer Window */}
       {isOpen && (
         <div
-          className={`rounded-3xl border border-[#00f0ff]/30 bg-[#0d0e13]/95 backdrop-blur-2xl shadow-[0_30px_90px_rgba(0,0,0,0.95),0_0_40px_rgba(0,240,255,0.15)] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200 transition-all ${
+          className={`keep-blur rounded-3xl border border-[#00f0ff]/30 bg-[#0d0e13]/95 backdrop-blur-2xl shadow-[0_30px_90px_rgba(0,0,0,0.95),0_0_40px_rgba(0,240,255,0.15)] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200 transition-all ${
             isExpanded
               ? "w-[94vw] sm:w-[520px] max-w-[540px] h-[640px] max-h-[88vh]"
               : "w-[340px] sm:w-[410px] h-[550px] max-h-[85vh]"

@@ -1201,3 +1201,43 @@ body {
   will-change: transform, opacity;
   backface-visibility: hidden;
 }
+
+/* Scroll performance: backdrop-filter re-blurs everything behind an element on
+   every frame (the ember canvas animates behind all cards), which is the main
+   cause of scroll jank. Panels already sit on 70-95% opaque backgrounds, so the
+   blur is imperceptible; it is kept only on the navbar, modal overlay and chat. */
+[class*="backdrop-blur"]:not(.keep-blur),
+.glass-card,
+.glass-craft-card {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Keep the cursor-follow glow and big sticky/fixed layers on the GPU */
+.ember-layer,
+[class*="blur-["] {
+  transform: translateZ(0);
+}
+
+/* While the page is actively scrolling (Lenis adds .lenis-scrolling), freeze
+   decorative infinite animations so the main thread only does scroll work. */
+html.lenis-scrolling *,
+html.lenis-scrolling *::before,
+html.lenis-scrolling *::after {
+  animation-play-state: paused !important;
+}
+
+/* Big ambient glow blobs: a 120-150px gaussian filter is very costly to
+   rasterise. A radial alpha mask gives the same soft, color-matched falloff
+   for a fraction of the cost. */
+[class*="blur-["]:not([class*="backdrop-"]),
+.blur-3xl,
+.blur-2xl,
+.blur-xl {
+  filter: none !important;
+  -webkit-mask-image: radial-gradient(closest-side, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 45%, rgba(0, 0, 0, 0.12) 78%, transparent 100%);
+  mask-image: radial-gradient(closest-side, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 45%, rgba(0, 0, 0, 0.12) 78%, transparent 100%);
+}
+.project-spotlight-halo {
+  filter: none;
+}

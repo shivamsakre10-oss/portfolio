@@ -23,10 +23,11 @@ export const initLenis = () => {
   document.documentElement.classList.add("lenis");
 
   lenis = new Lenis({
-    duration: 1.15,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    // Velocity-continuous lerp inertia: glides in and out with no easing-curve
+    // restarts between wheel ticks
+    lerp: 0.085,
     smoothWheel: true,
-    wheelMultiplier: 1,
+    wheelMultiplier: 0.9,
     touchMultiplier: 1.4,
     // Let inner scrollable panels (chat, terminal) scroll natively
     allowNestedScroll: true,

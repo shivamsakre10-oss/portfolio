@@ -757,7 +757,7 @@ STATUS SUMMARY:
           role="dialog"
         >
           {/* Ambient Modal Backdrop */}
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-md" onClick={closeModal} />
+          <div className="keep-blur fixed inset-0 bg-black/80 backdrop-blur-md" onClick={closeModal} />
 
           {/* Cyber Modal Card Container */}
           <div
