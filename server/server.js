@@ -25,10 +25,13 @@ app.use(express.json({ limit: "50kb" }));
 // Helper to extract client IP
 function getClientIp(req) {
   const forwarded = req.headers["x-forwarded-for"];
-  if (forwarded) {
+  if (typeof forwarded === "string") {
     return forwarded.split(",")[0].trim();
   }
-  return req.socket.remoteAddress || "127.0.0.1";
+  if (Array.isArray(forwarded) && forwarded[0]) {
+    return forwarded[0].trim();
+  }
+  return req.socket?.remoteAddress || "127.0.0.1";
 }
 
 // 1. Health check & configuration status

@@ -159,15 +159,20 @@ export default function Contact() {
           setSubmitButtonText("TRANSMIT INQUIRY");
         }, 3500);
       } else {
-        // Truthful failure
+        // Graceful failure with instant fallback
         setIsSubmitting(false);
         setSubmitButtonText("DELIVERY FAILED — PLEASE TRY AGAIN");
-        const errMsg =
-          result.error === "SMTP_NOT_CONFIGURED"
-            ? "Mail server credentials missing: Set SMTP_USER and SMTP_PASS in the .env file."
-            : result.message || "DELIVERY FAILED — PLEASE TRY AGAIN";
+        const isSmtpMissing = result.error === "SMTP_NOT_CONFIGURED";
+        const errMsg = isSmtpMissing
+          ? "Automated mail gateway is temporarily standing by. Use the quick fallback below to send via your email client or reach out directly to shivamsakre10@gmail.com."
+          : result.message || "DELIVERY FAILED — PLEASE TRY AGAIN";
         setSubmitError(errMsg);
-        showToast(`DELIVERY FAILED — ${errMsg}`, "error");
+        showToast(
+          isSmtpMissing
+            ? "Mail gateway standby — please send via direct email button."
+            : `DELIVERY FAILED — ${errMsg}`,
+          "error"
+        );
 
         setTimeout(() => {
           setSubmitButtonText("TRANSMIT INQUIRY");
@@ -177,8 +182,8 @@ export default function Contact() {
       console.error("Network / API failure:", err);
       setIsSubmitting(false);
       setSubmitButtonText("DELIVERY FAILED — PLEASE TRY AGAIN");
-      setSubmitError("Network error: Unable to reach email API. Check server connection.");
-      showToast("DELIVERY FAILED — Network error. Please try again.", "error");
+      setSubmitError("Network error: Unable to reach email API. Use the direct email fallback below to send your inquiry.");
+      showToast("Network error — please send via direct email.", "error");
 
       setTimeout(() => {
         setSubmitButtonText("TRANSMIT INQUIRY");
@@ -206,6 +211,28 @@ export default function Contact() {
     const timestamp = deliveryDetails?.timestamp || new Date().toISOString();
     const msgId = deliveryDetails?.messageId || "TX-8924-NEXUS";
     return `// NEXUS_SYS TRANSMISSION RECEIPT\nPKG_ID: #TX-8924-NEXUS\nMESSAGE_ID: ${msgId}\nTIMESTAMP: ${timestamp}\nSTATUS: EMAIL ACCEPTED BY MAIL SERVER\nDESTINATION: shivamsakre10@gmail.com\nSLA: < 24 HOURS`;
+  };
+
+  const generateMailtoUrl = () => {
+    const scopeLabel = String(formData.scope || "WEB PLATFORM").toUpperCase();
+    const aliasLabel = formData.alias || "Client";
+    const subject = encodeURIComponent(
+      `[Portfolio Inquiry] ${scopeLabel} — From ${aliasLabel}`
+    );
+    const body = encodeURIComponent(
+      `Hi Shivam,\n\nName / Alias: ${formData.alias}\nEmail: ${formData.email}\nScope: ${formData.scope}\nBudget: ${formData.budget}\n\nTechnical Brief:\n${formData.brief}\n\n---\nSent via Portfolio Direct Fallback`
+    );
+    return `mailto:shivamsakre10@gmail.com?subject=${subject}&body=${body}`;
+  };
+
+  const handleCopyInquiryFallback = () => {
+    const scopeLabel = String(formData.scope || "WEB PLATFORM").toUpperCase();
+    const aliasLabel = formData.alias || "Client";
+    const payload = `To: shivamsakre10@gmail.com\nSubject: [Portfolio Inquiry] ${scopeLabel} — From ${aliasLabel}\n\nClient Name: ${formData.alias}\nContact Email: ${formData.email}\nScope: ${formData.scope}\nBudget: ${formData.budget}\n\nTechnical Brief:\n${formData.brief}`;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(payload);
+      showToast("[INQUIRY COPIED TO CLIPBOARD] Ready to paste into your email!", "info");
+    }
   };
 
   const handleCopyReceipt = () => {
@@ -431,7 +458,7 @@ STATUS SUMMARY:
               {smtpStatus.checked && !smtpStatus.configured && (
                 <div className="flex items-center gap-2 text-[11px] font-code-sm text-amber-400/90 pl-1">
                   <span className="material-symbols-outlined text-[14px]">info</span>
-                  <span>SMTP Configuration: Standby (Set SMTP_PASS in server .env)</span>
+                  <span>Direct Gateway: Active &bull; Recipient: shivamsakre10@gmail.com</span>
                 </div>
               )}
             </div>
@@ -541,15 +568,44 @@ STATUS SUMMARY:
 
               {/* Technical Error Notice (Shown only if failure occurs) */}
               {submitError && (
-                <div className="mb-5 p-3.5 rounded-xl bg-red-950/50 border border-red-500/50 text-red-200 text-xs font-code-sm flex items-start gap-2.5 animate-pulse">
-                  <span className="material-symbols-outlined text-[18px] text-red-400 shrink-0">
-                    error
-                  </span>
-                  <div>
-                    <div className="font-bold uppercase tracking-wider text-red-400">
-                      DELIVERY FAILED — PLEASE TRY AGAIN
+                <div className="mb-5 p-4 rounded-xl bg-red-950/60 border border-red-500/60 text-red-200 text-xs font-code-sm">
+                  <div className="flex items-start gap-2.5">
+                    <span className="material-symbols-outlined text-[20px] text-red-400 shrink-0">
+                      error
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold uppercase tracking-wider text-red-400 flex items-center justify-between">
+                        <span>TRANSMISSION NOTICE</span>
+                        <button
+                          type="button"
+                          onClick={() => setSubmitError("")}
+                          className="text-red-400 hover:text-white transition-colors cursor-pointer text-xs font-bold"
+                          title="Dismiss notice"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                      <div className="mt-1 text-slate-300 leading-relaxed">{submitError}</div>
+
+                      {/* Direct 1-Click Fallback Options */}
+                      <div className="mt-3 pt-3 border-t border-red-500/30 flex flex-wrap items-center gap-2">
+                        <a
+                          href={generateMailtoUrl()}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#00e5ff] text-[#0b0e15] font-bold hover:bg-[#33ebff] transition-all text-xs cursor-pointer shadow-[0_0_12px_rgba(0,229,255,0.3)]"
+                        >
+                          <span className="material-symbols-outlined text-[15px]">mail</span>
+                          <span>OPEN IN MAIL APP [↵]</span>
+                        </a>
+                        <button
+                          type="button"
+                          onClick={handleCopyInquiryFallback}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold transition-all text-xs cursor-pointer"
+                        >
+                          <span className="material-symbols-outlined text-[15px]">content_copy</span>
+                          <span>COPY BRIEF & DETAILS</span>
+                        </button>
+                      </div>
                     </div>
-                    <div className="mt-0.5 text-slate-300">{submitError}</div>
                   </div>
                 </div>
               )}

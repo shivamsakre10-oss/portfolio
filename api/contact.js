@@ -6,7 +6,12 @@ export default async function handler(req, res) {
   }
 
   const forwarded = req.headers["x-forwarded-for"];
-  const ip = forwarded ? forwarded.split(",")[0].trim() : req.socket?.remoteAddress || "127.0.0.1";
+  const ip =
+    typeof forwarded === "string"
+      ? forwarded.split(",")[0].trim()
+      : Array.isArray(forwarded) && forwarded[0]
+      ? forwarded[0].trim()
+      : req.socket?.remoteAddress || "127.0.0.1";
 
   try {
     const result = await sendContactEmail({ ...req.body, ip });

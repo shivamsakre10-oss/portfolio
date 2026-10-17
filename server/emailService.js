@@ -57,13 +57,11 @@ export function isSmtpConfigured() {
   if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.trim() !== "") {
     return true;
   }
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
+  const user = (process.env.SMTP_USER || "").trim();
+  const pass = (process.env.SMTP_PASS || "").trim();
   return Boolean(
     user &&
       pass &&
-      user.trim() !== "" &&
-      pass.trim() !== "" &&
       !pass.includes("xxxx") &&
       pass !== "your-16-char-gmail-app-password"
   );
@@ -71,7 +69,9 @@ export function isSmtpConfigured() {
 
 // Create configured Nodemailer transporter
 export function createTransporter() {
-  if (!isSmtpConfigured()) {
+  const user = (process.env.SMTP_USER || "").trim();
+  const pass = (process.env.SMTP_PASS || "").trim();
+  if (!user || !pass) {
     return null;
   }
 
@@ -84,8 +84,8 @@ export function createTransporter() {
     port,
     secure,
     auth: {
-      user: process.env.SMTP_USER.trim(),
-      pass: process.env.SMTP_PASS.trim(),
+      user,
+      pass,
     },
     // Useful timeout limits
     connectionTimeout: 15000,
@@ -202,7 +202,6 @@ export async function sendContactEmail({ alias, email, scope, budget, brief, _go
     };
   }
 
-  const transporter = createTransporter();
   const destinationEmail =
     process.env.CONTACT_DESTINATION_EMAIL || "shivamsakre10@gmail.com";
   const fromName = process.env.SMTP_FROM_NAME || "NEXUS_SYS Transmission";
@@ -349,6 +348,16 @@ Note: Reply directly to this email to respond to ${alias.trim()} (${email.trim()
 
   // Option B: Standard Nodemailer SMTP
   try {
+    const transporter = createTransporter();
+    if (!transporter) {
+      return {
+        success: false,
+        status: 503,
+        error: "SMTP_NOT_CONFIGURED",
+        message:
+          "Mail server credentials missing. Please set SMTP_USER and SMTP_PASS or RESEND_API_KEY in the environment.",
+      };
+    }
     const info = await transporter.sendMail(mailOptions);
     return {
       success: true,
@@ -425,7 +434,6 @@ export async function sendReceiptEmail({ email, inquiryData, ip = "127.0.0.1" })
     };
   }
 
-  const transporter = createTransporter();
   const fromName = process.env.SMTP_FROM_NAME || "NEXUS_SYS Transmission";
   const fromAddress = process.env.SMTP_FROM || process.env.SMTP_USER;
   const timestamp = new Date().toISOString();
@@ -555,6 +563,16 @@ Secure WhatsApp        : +91 97703 75191
 
   // Option B: Standard Nodemailer SMTP
   try {
+    const transporter = createTransporter();
+    if (!transporter) {
+      return {
+        success: false,
+        status: 503,
+        error: "SMTP_NOT_CONFIGURED",
+        message:
+          "Mail server credentials missing. Please set SMTP_USER and SMTP_PASS or RESEND_API_KEY in the environment.",
+      };
+    }
     const info = await transporter.sendMail(mailOptions);
     return {
       success: true,

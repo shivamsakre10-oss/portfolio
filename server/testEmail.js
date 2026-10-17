@@ -59,7 +59,7 @@ async function runTest() {
           Authorization: `Bearer ${resendKey.trim()}`,
         },
         body: JSON.stringify({
-          from: process.env.SMTP_FROM || "NEXUS_SYS <onboarding@resend.dev>",
+          from: process.env.RESEND_FROM || "Shivam Sakre Transmission <onboarding@resend.dev>",
           to: [destEmail],
           subject: `[NEXUS_SYS Test] Real Email Delivery Verified ✓`,
           text: `Hello Shivam,\n\nThis is a real test transmission confirming that your contact form mail service is operational.\n\nTimestamp: ${timestamp}\nTarget: ${destEmail}\nProvider: Resend API`,

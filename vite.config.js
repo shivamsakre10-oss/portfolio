@@ -37,10 +37,13 @@ function apiDevMiddleware() {
           req.on("end", async () => {
             try {
               const body = rawBody ? JSON.parse(rawBody) : {};
+              const forwarded = req.headers["x-forwarded-for"];
               const ip =
-                req.headers["x-forwarded-for"] ||
-                req.socket.remoteAddress ||
-                "127.0.0.1";
+                typeof forwarded === "string"
+                  ? forwarded.split(",")[0].trim()
+                  : Array.isArray(forwarded) && forwarded[0]
+                  ? forwarded[0].trim()
+                  : req.socket?.remoteAddress || "127.0.0.1";
               const result = await sendContactEmail({ ...body, ip });
               res.statusCode = result.status || (result.success ? 200 : 400);
               res.setHeader("Content-Type", "application/json");
@@ -69,10 +72,13 @@ function apiDevMiddleware() {
           req.on("end", async () => {
             try {
               const body = rawBody ? JSON.parse(rawBody) : {};
+              const forwarded = req.headers["x-forwarded-for"];
               const ip =
-                req.headers["x-forwarded-for"] ||
-                req.socket.remoteAddress ||
-                "127.0.0.1";
+                typeof forwarded === "string"
+                  ? forwarded.split(",")[0].trim()
+                  : Array.isArray(forwarded) && forwarded[0]
+                  ? forwarded[0].trim()
+                  : req.socket?.remoteAddress || "127.0.0.1";
               const result = await sendReceiptEmail({ ...body, ip });
               res.statusCode = result.status || (result.success ? 200 : 400);
               res.setHeader("Content-Type", "application/json");
